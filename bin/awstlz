@@ -1,0 +1,27 @@
+#!/usr/bin/ruby
+# encoding: utf-8
+require 'find'
+require 'optparse'
+
+base_dir = File.dirname(File.expand_path(__FILE__)) + '/..'
+$:.unshift(base_dir + '/lib')
+
+require 'awstlz/client'
+
+params = ARGV.getopts('ma:d:s:', 'account:', 'do:', 'server:')
+
+params['account'] = params['a'] unless params['a'].nil?
+params['do']      = params['d'] unless params['d'].nil?
+params['server']  = params['s'] unless params['s'].nil?
+
+unless params['m'].nil?
+  if params['m'] == true
+    params['account'] = nil
+    params['do']      = 'all'
+    params['server']  = nil
+  end
+end
+
+awstlzClient = AwsTlz::Client.new(base_dir)
+awstlzClient.doSetInstance(params['account'], params['server'], params['do'])
+
